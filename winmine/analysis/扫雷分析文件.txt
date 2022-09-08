@@ -1,0 +1,63 @@
+01001BC9  /.  55            push ebp
+01001BCA  |.  8BEC          mov ebp,esp
+01001BCC  |.  83EC 40       sub esp,0x40
+01001BCF  |.  8B55 0C       mov edx,[arg.2]        uMsg
+01001BD2 >|.  8B4D 14       mov ecx,[arg.4]
+01001BD5  |.  53            push ebx
+01001BD6  |.  56            push esi                                 ;  winmine.01001BC9
+
+
+
+
+
+
+
+EBP+8    >|00610150  Pa.  参数1
+EBP+C    >|00000111  ..  参数2
+EBP+10   >|00000209  ...  参数3
+EBP+14   >|00000000  ....  参数4
+
+
+
+
+
+初级  209
+中级  20A
+高级  20B
+
+关于 251
+
+退出 200
+
+
+
+push 0x0
+push 0x20B
+push 0x111
+push 0X02650B96
+call 0x01001BC9
+
+
+
+
+
+
+时钟  0100579C     winmine.exe + 5798 
+
+
+雷区内存基址 ：  01005361      winmine.exe+5361
+雷区高度基址：  01005338      winmine.exe+5338
+雷区宽度基址：  01005334      winmine.exe+5334
+
+
+雷区 内存    24 x 30 . 但末尾符 10 10 ，   24 x 32
+
+雷标识 0x8F
+
+
+0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 8F 8F 0F
+0F 0F 0F 0F 0F 0F 0F 0F 0F 8F 0F 0F 0F 0F 10 10
+
+
+
+spy++ 窗口鼠标左键消息，计算得出每个格子 16px ，第0个格子坐标 ： (19,64)
