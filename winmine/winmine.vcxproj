@@ -206,15 +206,10 @@
     <ResourceCompile Include="winmine.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="C:\Users\Tany\Desktop\ce分析基址.CT" />
-    <None Include="C:\Users\Tany\Desktop\win_xp扫雷程序.exe" />
     <None Include="res\winmine.rc2" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\winmine.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="C:\Users\Tany\Desktop\扫雷分析文件.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

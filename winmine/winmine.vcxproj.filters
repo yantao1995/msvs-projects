@@ -60,21 +60,10 @@
     <None Include="res\winmine.rc2">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="C:\Users\Tany\Desktop\win_xp扫雷程序.exe">
-      <Filter>源文件</Filter>
-    </None>
-    <None Include="C:\Users\Tany\Desktop\ce分析基址.CT">
-      <Filter>源文件</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\winmine.ico">
       <Filter>资源文件</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="C:\Users\Tany\Desktop\扫雷分析文件.txt">
-      <Filter>源文件</Filter>
-    </Text>
   </ItemGroup>
 </Project>
