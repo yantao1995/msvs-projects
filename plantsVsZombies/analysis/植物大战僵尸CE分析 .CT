@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="38">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>2</ID>
+      <Description>"阳光地址"</Description>
+      <LastState Value="210" RealAddress="29FD8368"/>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>4 Bytes</VariableType>
+      <Address>00779618</Address>
+      <Offsets>
+        <Offset>5578</Offset>
+        <Offset>868</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>3</ID>
+      <Description>"阳光基址"</Description>
+      <LastState Value="02B6B098" RealAddress="00779618"/>
+      <ShowAsHex>1</ShowAsHex>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>4 Bytes</VariableType>
+      <Address>PlantsVsZombies.exe+379618</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>4</ID>
+      <Description>"阳光本次启动地址"</Description>
+      <LastState Value="210" RealAddress="29FD8368"/>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>4 Bytes</VariableType>
+      <Address>29FD8368</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>5</ID>
+      <Description>"阳光地址 offset 1"</Description>
+      <LastState Value="29FD2DF0" RealAddress="02B6B900"/>
+      <ShowAsHex>1</ShowAsHex>
+      <VariableType>4 Bytes</VariableType>
+      <Address>02B6B900</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>6</ID>
+      <Description>"阳光地址 offset 0"</Description>
+      <LastState Value="000000D2" RealAddress="29FD8368"/>
+      <ShowAsHex>1</ShowAsHex>
+      <VariableType>4 Bytes</VariableType>
+      <Address>29FD8368</Address>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <Comments>关于表格信息:
+</Comments>
+</CheatTable>
