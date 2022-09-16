@@ -13,10 +13,14 @@
 #endif
 
 #define WM_UPDATE_SUNSHINE WM_USER+100
+#define WM_UPDATE_GOLD WM_USER+101
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
 CString showSunshine;
-UINT MyThreadFunction(LPVOID pParam);
+UINT MyThreadFunctionSunshine(LPVOID pParam);
+CString showGold;
+UINT MyThreadFunctionGold(LPVOID pParam);
+
 class CAboutDlg : public CDialogEx
 {
 public:
@@ -56,6 +60,7 @@ CplantsVsZombiesDlg::CplantsVsZombiesDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_PLANTSVSZOMBIES_DIALOG, pParent)
 	, sunshine_set(_T(""))
 	, sunshine_show(_T(""))
+	, m_check_box(FALSE)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -67,6 +72,7 @@ void CplantsVsZombiesDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT2, sunshine_set);
 	//  DDX_Text(pDX, IDC_EDIT3, sunshine_show);
 	DDX_Text(pDX, IDC_EDIT3, sunshine_show);
+	DDX_Check(pDX, IDC_CHECK1, m_check_box);
 }
 
 BEGIN_MESSAGE_MAP(CplantsVsZombiesDlg, CDialogEx)
@@ -76,6 +82,9 @@ BEGIN_MESSAGE_MAP(CplantsVsZombiesDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON1, &CplantsVsZombiesDlg::OnBnClickedButton1)
 	ON_WM_USERCHANGED()
 	ON_MESSAGE(WM_UPDATE_SUNSHINE, &CplantsVsZombiesDlg::OnUpdateSunshine)
+	ON_MESSAGE(WM_UPDATE_GOLD, &CplantsVsZombiesDlg::OnUpdateGold)
+	ON_BN_CLICKED(IDC_BUTTON2, &CplantsVsZombiesDlg::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_CHECK1, &CplantsVsZombiesDlg::OnBnClickedCheck1)
 END_MESSAGE_MAP()
 
 
@@ -155,7 +164,9 @@ void CplantsVsZombiesDlg::OnPaint()
 	{
 		CDialogEx::OnPaint();
 	}
-	CWinThread* MyThread = AfxBeginThread(MyThreadFunction, NULL, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+	CWinThread* MyThreadSunshine = AfxBeginThread(MyThreadFunctionSunshine, NULL, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+	CWinThread* MyThreadGold = AfxBeginThread(MyThreadFunctionGold, NULL, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+
 }
 
 //当用户拖动最小化窗口时系统调用此函数取得光标
@@ -186,6 +197,28 @@ BOOL IsIntNumber( CString str)
 		}
 	}
 }
+int CStr2Uint32(CString pStr)
+{
+	int i = 0;
+	int res = 0;
+
+	while (pStr[i] != L'\0') {
+		if (pStr[i] >= L'0' && pStr[i] <= L'9') {
+			res = res * 10 + pStr[i] - L'0';
+		}
+		else {
+			break;
+		}
+		i++;
+	}
+	return res;
+}
+BOOL IsTenNumber(CString str)
+{
+	int i = CStr2Uint32(str);
+	return i % 10 == 0;
+}
+
 
 
 void CplantsVsZombiesDlg::OnBnClickedButton1()
@@ -230,16 +263,14 @@ void CplantsVsZombiesDlg::OnBnClickedButton1()
 	}
 }
 
-
-void CplantsVsZombiesDlg::OnBnClickedButton2()
-{
-	
-
-}
+DWORD GoldBaseAddreess = 0x007794F8;
+DWORD GoldOffset1 = 0x950;
+DWORD GoldOffset2 = 0x50;
 
 
-//CWinThread* MyThread = AfxBeginThread(MyThreadFunction, NULL, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
-UINT MyThreadFunction(LPVOID pParam)
+
+//CWinThread* MyThread = AfxBeginThread(MyThreadFunctionSunshine, NULL, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+UINT MyThreadFunctionSunshine(LPVOID pParam)
 {
 	//Sleep(1000);
 	while (TRUE) {
@@ -281,6 +312,50 @@ UINT MyThreadFunction(LPVOID pParam)
 	};
 }
 
+UINT MyThreadFunctionGold(LPVOID pParam)
+{
+	//Sleep(1000);
+	while (TRUE) {
+		Sleep(500);
+		HWND hwnd = ::FindWindow(_T("MainWindow"), _T("Plants vs. Zombies GOTY "));
+		if (hwnd == NULL) {
+			continue;
+		}
+
+		DWORD pid;
+		::GetWindowThreadProcessId(hwnd, &pid);
+
+		HANDLE hprocess = ::OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+		if (hprocess == NULL) {
+			continue;
+		}
+
+		DWORD baseAddr = 0x0;
+		if (!::ReadProcessMemory(hprocess, (LPCVOID)GoldBaseAddreess, &baseAddr, sizeof(baseAddr), NULL)) {
+			continue;
+		}
+
+		DWORD offset1Addr = 0x0;
+		if (!::ReadProcessMemory(hprocess, (LPCVOID)(baseAddr + GoldOffset1), &offset1Addr, sizeof(offset1Addr), NULL)) {
+			continue;
+		}
+
+		int goldCount;
+		if (!::ReadProcessMemory(hprocess, (LPCVOID)(offset1Addr + GoldOffset2), &goldCount, sizeof(goldCount), NULL)) {
+			continue;
+		}
+		goldCount *= 10;
+		showGold.Format(_T("%d"), goldCount);
+
+		HWND  thisHwnd = ::FindWindow(NULL, _T("植物大战僵尸辅助"));
+		if (thisHwnd == NULL) {
+			continue;
+		}
+		::SendMessage(thisHwnd, WM_UPDATE_GOLD, NULL, NULL);
+	};
+}
+
+
 void CplantsVsZombiesDlg::OnUserChanged()
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
@@ -294,4 +369,91 @@ afx_msg LRESULT CplantsVsZombiesDlg::OnUpdateSunshine(WPARAM wParam, LPARAM lPar
 	sunshine_show.SetString(showSunshine);
 	GetDlgItem(IDC_EDIT3)->SetWindowText(showSunshine);
 	return 0;
+}
+
+
+afx_msg LRESULT CplantsVsZombiesDlg::OnUpdateGold(WPARAM wParam, LPARAM lParam)
+{
+	gold_show.SetString(showGold);
+	GetDlgItem(IDC_EDIT5)->SetWindowText(showGold);
+	return 0;
+}
+
+
+void CplantsVsZombiesDlg::OnBnClickedButton2()
+{
+	CString setValStr;
+	GetDlgItem(IDC_EDIT4)->GetWindowText(setValStr);
+	if (!IsIntNumber(setValStr) || !IsTenNumber(setValStr)) {
+		::MessageBox(NULL, _T("只能输入1e10内10的倍数"), _T("错误"), MB_OK);
+		return;
+	}
+
+	HWND hwnd = ::FindWindow(_T("MainWindow"), _T("Plants vs. Zombies GOTY "));
+	if (hwnd == NULL) {
+		::MessageBox(NULL, _T("未找到游戏窗口"), _T("错误"), MB_OK);
+		return;
+	}
+
+	DWORD pid;
+	::GetWindowThreadProcessId(hwnd, &pid);
+
+	HANDLE hprocess = ::OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+	if (hprocess == NULL) {
+		::MessageBox(NULL, _T("打开进程失败"), _T("错误"), MB_OK);
+		return;
+	}
+
+	DWORD baseAddr = 0x0;
+	if (!::ReadProcessMemory(hprocess, (LPCVOID)GoldBaseAddreess, &baseAddr, sizeof(baseAddr), NULL)) {
+		::MessageBox(NULL, _T("读基址失败"), _T("错误"), MB_OK);
+		return;
+	}
+
+	DWORD offset1Addr = 0x0;
+	if (!::ReadProcessMemory(hprocess, (LPCVOID)(baseAddr + GoldOffset1), &offset1Addr, sizeof(offset1Addr), NULL)) {
+		::MessageBox(NULL, _T("读基址偏移1失败"), _T("错误"), MB_OK);
+		return;
+	}
+	int numer = _ttoi(setValStr);
+	numer /= 10;   //金币在内存中是1:10倍关系
+	if (!::WriteProcessMemory(hprocess, (void*)(offset1Addr + GoldOffset2), &numer, sizeof(numer), NULL)) {
+		::MessageBox(NULL, _T("写地址数据失败"), _T("错误"), MB_OK);
+	}
+}
+
+
+
+void CplantsVsZombiesDlg::OnBnClickedCheck1()
+{
+	UpdateData(TRUE);
+	HWND hwnd = ::FindWindow(_T("MainWindow"), _T("Plants vs. Zombies GOTY "));
+	if (hwnd == NULL) {
+		::MessageBox(NULL, _T("未找到游戏窗口"), _T("错误"), MB_OK);
+		return;
+	}
+
+	DWORD pid;
+	::GetWindowThreadProcessId(hwnd, &pid);
+
+	HANDLE hprocess = ::OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+	if (hprocess == NULL) {
+		::MessageBox(NULL, _T("打开进程失败"), _T("错误"), MB_OK);
+		return;
+	}
+
+	DWORD ASM_ADDR = 0x004B2FF3;
+	UCHAR buf[2] = { 0 };
+
+	if (m_check_box) {	//开启		//nop nop =  0x90  0x90
+		buf[0] = 0x90;
+		buf[1] = 0x90;
+	}else {	//关闭 恢复  004B2FF3   .  7E 12         jle short PlantsVs.004B3007
+		buf[0] = 0x7E;
+		buf[1] = 0x12;
+	}
+	if (!::WriteProcessMemory(hprocess, (LPVOID)ASM_ADDR, &buf, sizeof(buf), NULL)) {
+		::MessageBox(NULL, _T("写基址失败"), _T("错误"), MB_OK);
+		return;
+	}
 }

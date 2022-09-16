@@ -1,5 +1,7 @@
-阳光基址分析 CE寻找
+基址分析 CE寻找
 
+
+阳光
 	
 当前阳光地址： 2A3FDB88
 
@@ -28,3 +30,66 @@ add eax,dword ptr ds:[edx+0x5578]
 
 
 =  [[[00779618]+0x868]+0x5578]
+
+
+
+
+----------------------------------------
+
+金币
+
+分析发现 金币精确数值存在 比例关系  1:10   内存 1 ：显示 10
+
+
+当前金币地址 0D1BC9D0
+
+00430B14 - 8B 51 50  - mov edx,[ecx+50]
+
+当前金币地址  [ecx+50]     ECX=0D1BC980
+
+00430B0E - 8B 88 50090000  - mov ecx,[eax+00000950]
+
+当前金币地址  [[eax+00000950]+50]    EAX=0286B098
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable>
+  <CheatEntries>
+    <CheatEntry>
+      <ID>4</ID>
+      <Description>"金币基址"</Description>
+      <LastState Value="029AB098" RealAddress="007794F8"/>
+      <ShowAsHex>1</ShowAsHex>
+      <VariableType>4 Bytes</VariableType>
+      <Address>PlantsVsZombies.exe+3794F8</Address>
+    </CheatEntry>
+  </CheatEntries>
+</CheatTable>
+
+
+金币基址 ： PlantsVsZombies.exe+3794F8     = 007794F8
+
+
+= [[[007794F8]+00000950]+50]
+
+
+-----------------------------------------
+
+冷却时间
+
+
+004B2FEA   .  FF47 24       inc dword ptr ds:[edi+0x24]
+004B2FED   .  8B47 24       mov eax,dword ptr ds:[edi+0x24]
+004B2FF0   .  3B47 28       cmp eax,dword ptr ds:[edi+0x28]
+004B2FF3   .  7E 12         jle short PlantsVs.004B3007
+004B2FF5   .  8BC7          mov eax,edi
+004B2FF7   .  895F 24       mov dword ptr ds:[edi+0x24],ebx
+
+
+
+edi+ 0x24 是当前值
+edi+ 0x28 是CD上限值
+
+
+可以直接nop覆盖掉 jle 不进行比较跳转
+

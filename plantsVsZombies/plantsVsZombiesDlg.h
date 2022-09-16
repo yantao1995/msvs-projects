@@ -34,9 +34,17 @@ protected:
 public:
 	CString sunshine_set;
 	afx_msg void OnBnClickedButton1();
-	afx_msg void OnBnClickedButton2();
 	CString sunshine_show;
 	afx_msg void OnUserChanged();
 protected:
 	afx_msg LRESULT OnUpdateSunshine(WPARAM wParam, LPARAM lParam);
+public:
+	CString gold_show;
+	CString gold_set;
+protected:
+	afx_msg LRESULT OnUpdateGold(WPARAM wParam, LPARAM lParam);
+public:
+	afx_msg void OnBnClickedButton2();
+	afx_msg void OnBnClickedCheck1();
+	BOOL m_check_box;
 };
